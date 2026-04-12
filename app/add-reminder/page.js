@@ -1,8 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { db } from "@/lib/firebase";
+import { addDoc, collection, Timestamp } from "firebase/firestore";
 
 export default function AddReminderPage() {
+    const router = useRouter();
+
     const [formData, setFormData] = useState({
         petName: "",
         type: "",
@@ -10,6 +15,8 @@ export default function AddReminderPage() {
         time: "",
         description: "",
     });
+
+    const [message, setMessage] = useState("");
 
     function handleChange(event) {
         const { name, value } = event.target;
@@ -19,9 +26,37 @@ export default function AddReminderPage() {
         }));
     }
 
-    function handleSubmit(event) {
+    async function handleSubmit(event) {
         event.preventDefault();
-        console.log("Reminder submitted:", formData);
+        setMessage("");
+
+        try {
+        await addDoc(collection(db, "reminders"), {
+            petName: formData.petName,
+            type: formData.type,
+            date: formData.date,
+            time: formData.time,
+            description: formData.description,
+            completed: false,
+            createdAt: Timestamp.now(),
+        });
+
+        setMessage("Reminder added successfully.");
+
+        setFormData({
+            petName: "",
+            type: "",
+            date: "",
+            time: "",
+            description: "",
+        });
+
+        router.push("/schedule");
+        router.refresh();
+        } catch (error) {
+        console.error("Error adding reminder:", error);
+        setMessage("Failed to add reminder.");
+        }
     }
 
     return (
@@ -78,6 +113,8 @@ export default function AddReminderPage() {
             Save Reminder
             </button>
         </form>
+
+        {message && <p className="status-message">{message}</p>}
         </div>
     );
 }
