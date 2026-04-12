@@ -1,10 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { db } from "@/lib/firebase";
 import { addDoc, collection, Timestamp } from "firebase/firestore";
 
 export default function AddPetPage() {
+    const router = useRouter();
+
     const [formData, setFormData] = useState({
         name: "",
         type: "",
@@ -46,6 +49,9 @@ export default function AddPetPage() {
             age: "",
             notes: "",
         });
+
+        router.push("/pets");
+        router.refresh();
         } catch (error) {
         console.error("Error adding pet:", error);
         setMessage("Failed to add pet.");
