@@ -20,6 +20,7 @@ export default function AddReminderPage() {
 
     function handleChange(event) {
         const { name, value } = event.target;
+
         setFormData((prev) => ({
         ...prev,
         [name]: value,
