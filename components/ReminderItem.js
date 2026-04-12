@@ -34,7 +34,10 @@ export default function ReminderItem({ reminder, onDelete, onToggleComplete, onE
         <div className="card">
         <h3 className="card-title">{reminder.type}</h3>
         <p><strong>Pet:</strong> {reminder.petName}</p>
-        <p><strong>Date:</strong> {reminder.date}</p>
+        <p>
+            <strong>Date:</strong>{" "}
+            {new Date(reminder.date).toLocaleDateString("en-US")}
+        </p>
         <p><strong>Time:</strong> {reminder.time}</p>
         <p><strong>Details:</strong> {reminder.description}</p>
         <p>
