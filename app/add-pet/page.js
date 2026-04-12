@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { db } from "@/lib/firebase";
+import { addDoc, collection, Timestamp } from "firebase/firestore";
 
 export default function AddPetPage() {
     const [formData, setFormData] = useState({
@@ -11,6 +13,8 @@ export default function AddPetPage() {
         notes: "",
     });
 
+    const [message, setMessage] = useState("");
+
     function handleChange(event) {
         const { name, value } = event.target;
         setFormData((prev) => ({
@@ -19,9 +23,33 @@ export default function AddPetPage() {
         }));
     }
 
-    function handleSubmit(event) {
+    async function handleSubmit(event) {
         event.preventDefault();
-        console.log("Pet submitted:", formData);
+        setMessage("");
+
+        try {
+        await addDoc(collection(db, "pets"), {
+            name: formData.name,
+            type: formData.type,
+            breed: formData.breed,
+            age: Number(formData.age) || 0,
+            notes: formData.notes,
+            createdAt: Timestamp.now(),
+        });
+
+        setMessage("Pet added successfully.");
+
+        setFormData({
+            name: "",
+            type: "",
+            breed: "",
+            age: "",
+            notes: "",
+        });
+        } catch (error) {
+        console.error("Error adding pet:", error);
+        setMessage("Failed to add pet.");
+        }
     }
 
     return (
@@ -75,6 +103,8 @@ export default function AddPetPage() {
             Save Pet
             </button>
         </form>
+
+        {message && <p className="status-message">{message}</p>}
         </div>
     );
 }
