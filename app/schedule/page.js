@@ -35,6 +35,18 @@ export default function SchedulePage() {
         fetchReminders();
     }, []);
 
+    function handleDeleteReminder(deletedId) {
+        setReminders((prev) => prev.filter((reminder) => reminder.id !== deletedId));
+    }
+
+    function handleToggleComplete(id, newStatus) {
+        setReminders((prev) =>
+        prev.map((reminder) =>
+            reminder.id === id ? { ...reminder, completed: newStatus } : reminder
+        )
+        );
+    }
+
     return (
         <div>
         <h1 className="page-title">Schedule</h1>
@@ -45,7 +57,11 @@ export default function SchedulePage() {
         ) : reminders.length === 0 ? (
             <p>No reminders added yet.</p>
         ) : (
-            <ReminderList reminders={reminders} />
+            <ReminderList
+            reminders={reminders}
+            onDelete={handleDeleteReminder}
+            onToggleComplete={handleToggleComplete}
+            />
         )}
         </div>
     );
