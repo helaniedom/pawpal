@@ -46,6 +46,10 @@ export default function ReminderItem({ reminder, onDelete, onToggleComplete, onE
             {reminder.completed ? "Mark Pending" : "Mark Complete"}
             </button>
 
+            <button onClick={() => onEdit && onEdit(reminder)} className="edit-button">
+            Edit
+            </button>
+
             <button onClick={handleDelete} className="danger-button">
             Delete
             </button>
