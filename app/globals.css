@@ -1,17 +1,37 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-body {
-  font-family: Arial, Helvetica, sans-serif;
+nav {
+  background-color: white;
+  border-bottom: 1px solid #fbcfe8;
+  padding: 16px 24px;
 }
 
-input,
-select,
-textarea {
-  @apply w-full rounded-lg border border-gray-300 px-3 py-2 outline-none;
+.nav-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
 }
 
-button {
-  @apply rounded-lg px-4 py-2 font-medium transition;
+.logo {
+  font-size: 28px;
+  font-weight: bold;
+  color: #ec4899;
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #374151;
+}
+
+.nav-links a:hover {
+  color: #ec4899;
 }
