@@ -1,11 +1,37 @@
-.two-column-grid {
+.form-container {
+  max-width: 700px;
+  margin: 0 auto;
+  background: white;
+  border: 1px solid #fbcfe8;
+  border-radius: 14px;
+  padding: 24px;
+}
+
+.form-layout {
   display: grid;
-  grid-template-columns: 1fr;
   gap: 16px;
 }
 
-@media (min-width: 768px) {
-  .two-column-grid {
-    grid-template-columns: 1fr 1fr;
-  }
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.primary-button {
+  background-color: #ec4899;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 16px;
+  cursor: pointer;
+}
+
+.primary-button:hover {
+  background-color: #db2777;
 }
