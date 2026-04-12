@@ -1,3 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #fff7fb;
+  color: #1f2937;
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+nav {
+  background-color: white;
+  border-bottom: 1px solid #fbcfe8;
+  padding: 16px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.nav-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: bold;
+  color: #ec4899;
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #374151;
+  font-weight: 500;
+}
+
+.nav-links a:hover {
+  color: #ec4899;
+}
+
+.page-title {
+  font-size: 32px;
+  color: #ec4899;
+  margin-bottom: 8px;
+}
+
+.page-text {
+  color: #4b5563;
+  margin-bottom: 24px;
+}
+
+.two-column-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .two-column-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.grid-list {
+  display: grid;
+  gap: 16px;
+}
+
+.card {
+  background: white;
+  border: 1px solid #fbcfe8;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.card-title {
+  margin-top: 0;
+  color: #ec4899;
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+
+.card-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
 .form-container {
   max-width: 700px;
   margin: 0 auto;
@@ -5,6 +115,7 @@
   border: 1px solid #fbcfe8;
   border-radius: 14px;
   padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .form-layout {
@@ -34,4 +145,49 @@ textarea {
 
 .primary-button:hover {
   background-color: #db2777;
+}
+
+.secondary-button {
+  background-color: #fce7f3;
+  color: #9d174d;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.secondary-button:hover {
+  background-color: #fbcfe8;
+}
+
+.edit-button {
+  background-color: #f3e8ff;
+  color: #6b21a8;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.edit-button:hover {
+  background-color: #e9d5ff;
+}
+
+.danger-button {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.danger-button:hover {
+  background-color: #fecaca;
+}
+
+.status-message {
+  margin-top: 16px;
+  color: #16a34a;
+  font-weight: 500;
 }
