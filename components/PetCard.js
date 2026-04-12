@@ -1,4 +1,21 @@
-export default function PetCard({ pet }) {
+"use client";
+
+import { deleteDoc, doc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+
+export default function PetCard({ pet, onDelete, onEdit }) {
+    async function handleDelete() {
+        const confirmed = window.confirm(`Delete ${pet.name}'s profile?`);
+        if (!confirmed) return;
+
+        try {
+        await deleteDoc(doc(db, "pets", pet.id));
+        if (onDelete) onDelete(pet.id);
+        } catch (error) {
+        console.error("Error deleting pet:", error);
+        }
+    }
+
     return (
         <div className="card">
         <h2 className="card-title">{pet.name}</h2>
@@ -6,6 +23,18 @@ export default function PetCard({ pet }) {
         <p><strong>Breed:</strong> {pet.breed}</p>
         <p><strong>Age:</strong> {pet.age}</p>
         <p><strong>Notes:</strong> {pet.notes}</p>
+
+        <div className="card-actions">
+            {onEdit && (
+            <button onClick={() => onEdit(pet)} className="edit-button">
+                Edit
+            </button>
+            )}
+
+            <button onClick={handleDelete} className="danger-button">
+            Delete
+            </button>
+        </div>
         </div>
     );
 }

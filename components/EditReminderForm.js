@@ -1,19 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { db } from "@/lib/firebase";
-import { addDoc, collection, Timestamp } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 
-export default function AddReminderPage() {
-    const router = useRouter();
-
+export default function EditReminderForm({ reminder, onUpdated, onCancel }) {
     const [formData, setFormData] = useState({
-        petName: "",
-        type: "",
-        date: "",
-        time: "",
-        description: "",
+        petName: reminder.petName || "",
+        type: reminder.type || "",
+        date: reminder.date || "",
+        time: reminder.time || "",
+        description: reminder.description || "",
     });
 
     const [message, setMessage] = useState("");
@@ -32,43 +29,32 @@ export default function AddReminderPage() {
         setMessage("");
 
         try {
-        await addDoc(collection(db, "reminders"), {
+        await updateDoc(doc(db, "reminders", reminder.id), {
             petName: formData.petName,
             type: formData.type,
             date: formData.date,
             time: formData.time,
             description: formData.description,
-            completed: false,
-            createdAt: Timestamp.now(),
         });
 
-        setMessage("Reminder added successfully.");
-
-        setFormData({
-            petName: "",
-            type: "",
-            date: "",
-            time: "",
-            description: "",
+        onUpdated({
+            ...reminder,
+            ...formData,
         });
-
-        router.push("/schedule");
-        router.refresh();
         } catch (error) {
-        console.error("Error adding reminder:", error);
-        setMessage("Failed to add reminder.");
+        console.error("Error updating reminder:", error);
+        setMessage("Failed to update reminder.");
         }
     }
 
     return (
-        <div className="form-container">
-        <h1 className="page-title">Add Reminder</h1>
+        <div className="form-container" style={{ marginBottom: "24px" }}>
+        <h2 className="page-title" style={{ fontSize: "24px" }}>Edit Reminder</h2>
 
         <form onSubmit={handleSubmit} className="form-layout">
             <input
             type="text"
             name="petName"
-            placeholder="Pet Name"
             value={formData.petName}
             onChange={handleChange}
             required
@@ -104,15 +90,19 @@ export default function AddReminderPage() {
 
             <textarea
             name="description"
-            placeholder="Reminder Details"
             rows="4"
             value={formData.description}
             onChange={handleChange}
             />
 
+            <div className="card-actions">
             <button type="submit" className="primary-button">
-            Save Reminder
+                Save Changes
             </button>
+            <button type="button" onClick={onCancel} className="secondary-button">
+                Cancel
+            </button>
+            </div>
         </form>
 
         {message && <p className="status-message">{message}</p>}
