@@ -4,10 +4,12 @@ import { useEffect, useState } from "react";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import PetCard from "@/components/PetCard";
+import EditPetForm from "@/components/EditPetForm";
 
 export default function PetsPage() {
     const [pets, setPets] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [selectedPet, setSelectedPet] = useState(null);
 
     useEffect(() => {
         async function fetchPets() {
@@ -35,14 +37,39 @@ export default function PetsPage() {
         fetchPets();
     }, []);
 
-    function handleDeletePet(deletedId) {
-        setPets((prev) => prev.filter((pet) => pet.id !== deletedId));
+    function handleDeletePet(id) {
+        setPets((prev) => prev.filter((pet) => pet.id !== id));
+    }
+
+    function handleEditPet(pet) {
+        setSelectedPet(pet);
+    }
+
+    function handlePetUpdated(updatedPet) {
+        setPets((prev) =>
+        prev.map((pet) =>
+            pet.id === updatedPet.id ? updatedPet : pet
+        )
+        );
+        setSelectedPet(null);
+    }
+
+    function handleCancelEdit() {
+        setSelectedPet(null);
     }
 
     return (
         <div>
         <h1 className="page-title">My Pets</h1>
         <p className="page-text">View all pet profiles in one place.</p>
+
+        {selectedPet && (
+            <EditPetForm
+            pet={selectedPet}
+            onUpdated={handlePetUpdated}
+            onCancel={handleCancelEdit}
+            />
+        )}
 
         {loading ? (
             <p>Loading pets...</p>
@@ -51,7 +78,12 @@ export default function PetsPage() {
         ) : (
             <div className="two-column-grid">
             {pets.map((pet) => (
-                <PetCard key={pet.id} pet={pet} onDelete={handleDeletePet} />
+                <PetCard
+                key={pet.id}
+                pet={pet}
+                onDelete={handleDeletePet}
+                onEdit={handleEditPet}
+                />
             ))}
             </div>
         )}
