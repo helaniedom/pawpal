@@ -35,6 +35,10 @@ export default function PetsPage() {
         fetchPets();
     }, []);
 
+    function handleDeletePet(deletedId) {
+        setPets((prev) => prev.filter((pet) => pet.id !== deletedId));
+    }
+
     return (
         <div>
         <h1 className="page-title">My Pets</h1>
@@ -47,7 +51,7 @@ export default function PetsPage() {
         ) : (
             <div className="two-column-grid">
             {pets.map((pet) => (
-                <PetCard key={pet.id} pet={pet} />
+                <PetCard key={pet.id} pet={pet} onDelete={handleDeletePet} />
             ))}
             </div>
         )}
