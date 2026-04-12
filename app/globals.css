@@ -1,13 +1,11 @@
-.card {
-  background: white;
-  border: 1px solid #fbcfe8;
-  border-radius: 14px;
-  padding: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+.two-column-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
 }
 
-.card-title {
-  margin-top: 0;
-  color: #ec4899;
-  font-size: 22px;
+@media (min-width: 768px) {
+  .two-column-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
