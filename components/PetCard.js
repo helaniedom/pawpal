@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { deleteDoc, doc } from "firebase/firestore";
+import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 export default function PetCard({ pet, onDelete, onEdit }) {
-    const [feedingChecklist, setFeedingChecklist] = useState({
-        am: false,
-        pm: false,
-    });
+    const today = new Date().toISOString().split("T")[0];
+    const isToday = pet.lastFedDate === today;
+
+    const amChecked = isToday ? !!pet.amFed : false;
+    const pmChecked = isToday ? !!pet.pmFed : false;
 
     async function handleDelete() {
         const confirmed = window.confirm(`Delete ${pet.name}'s profile?`);
@@ -22,11 +22,35 @@ export default function PetCard({ pet, onDelete, onEdit }) {
         }
     }
 
-    function toggleChecklist(period) {
-        setFeedingChecklist((prev) => ({
-            ...prev,
-            [period]: !prev[period],
-        }));
+    async function handleFeedingToggle(period) {
+        try {
+            const petRef = doc(db, "pets", pet.id);
+
+            if (pet.lastFedDate !== today) {
+                await updateDoc(petRef, {
+                    amFed: period === "am",
+                    pmFed: period === "pm",
+                    lastFedDate: today,
+                });
+                return;
+            }
+
+            if (period === "am") {
+                await updateDoc(petRef, {
+                    amFed: !amChecked,
+                    lastFedDate: today,
+                });
+            }
+
+            if (period === "pm") {
+                await updateDoc(petRef, {
+                    pmFed: !pmChecked,
+                    lastFedDate: today,
+                });
+            }
+        } catch (error) {
+            console.error("Error updating feeding checklist:", error);
+        }
     }
 
     function renderCheckbox(checked, onChange) {
@@ -154,7 +178,7 @@ export default function PetCard({ pet, onDelete, onEdit }) {
                         }}
                     >
                         <span style={{ fontWeight: "600", color: "#374151" }}>AM</span>
-                        {renderCheckbox(feedingChecklist.am, () => toggleChecklist("am"))}
+                        {renderCheckbox(amChecked, () => handleFeedingToggle("am"))}
                     </div>
 
                     <div
@@ -166,7 +190,7 @@ export default function PetCard({ pet, onDelete, onEdit }) {
                         }}
                     >
                         <span style={{ fontWeight: "600", color: "#374151" }}>PM</span>
-                        {renderCheckbox(feedingChecklist.pm, () => toggleChecklist("pm"))}
+                        {renderCheckbox(pmChecked, () => handleFeedingToggle("pm"))}
                     </div>
                 </div>
             </div>
