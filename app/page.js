@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { db } from "@/lib/firebase";
-import { collection, getDocs, orderBy, query, limit } from "firebase/firestore";
+import { collection, getDocs, query, limit } from "firebase/firestore";
 import PetCard from "@/components/PetCard";
 import ReminderList from "@/components/ReminderList";
 
@@ -16,14 +16,11 @@ export default function HomePage() {
             try {
                 const petsQuery = query(
                     collection(db, "pets"),
-                    orderBy("createdAt", "desc"),
                     limit(4)
                 );
 
                 const remindersQuery = query(
-                    collection(db, "reminders"),
-                    orderBy("createdAt", "desc"),
-                    limit(5)
+                    collection(db, "reminders")
                 );
 
                 const [petsSnapshot, remindersSnapshot] = await Promise.all([
@@ -36,10 +33,17 @@ export default function HomePage() {
                     ...doc.data(),
                 }));
 
-                const reminderData = remindersSnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
+                const reminderData = remindersSnapshot.docs
+                    .map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }))
+                    .sort((a, b) => {
+                        const aDateTime = new Date(`${a.date}T${a.time}`);
+                        const bDateTime = new Date(`${b.date}T${b.time}`);
+                        return aDateTime - bDateTime;
+                    })
+                    .slice(0, 5);
 
                 setPets(petData);
                 setReminders(reminderData);

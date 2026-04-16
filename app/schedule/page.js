@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { db } from "@/lib/firebase";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { collection, getDocs, query } from "firebase/firestore";
 import ReminderList from "@/components/ReminderList";
 import EditReminderForm from "@/components/EditReminderForm";
 
@@ -13,39 +13,56 @@ export default function SchedulePage() {
 
     useEffect(() => {
         async function fetchReminders() {
-        try {
-            const remindersQuery = query(
-            collection(db, "reminders"),
-            orderBy("createdAt", "desc")
-            );
+            try {
+                const remindersQuery = query(
+                    collection(db, "reminders")
+                );
 
-            const querySnapshot = await getDocs(remindersQuery);
+                const querySnapshot = await getDocs(remindersQuery);
 
-            const reminderData = querySnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-            }));
+                const reminderData = querySnapshot.docs
+                    .map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }))
+                    .sort((a, b) => {
+                        const aDateTime = new Date(`${a.date}T${a.time}`);
+                        const bDateTime = new Date(`${b.date}T${b.time}`);
+                        return aDateTime - bDateTime;
+                    });
 
-            setReminders(reminderData);
-        } catch (error) {
-            console.error("Error fetching reminders:", error);
-        } finally {
-            setLoading(false);
-        }
+                setReminders(reminderData);
+            } catch (error) {
+                console.error("Error fetching reminders:", error);
+            } finally {
+                setLoading(false);
+            }
         }
 
         fetchReminders();
     }, []);
 
+    function sortRemindersByDate(reminderList) {
+        return [...reminderList].sort((a, b) => {
+            const aDateTime = new Date(`${a.date}T${a.time}`);
+            const bDateTime = new Date(`${b.date}T${b.time}`);
+            return aDateTime - bDateTime;
+        });
+    }
+
     function handleDeleteReminder(deletedId) {
-        setReminders((prev) => prev.filter((reminder) => reminder.id !== deletedId));
+        setReminders((prev) =>
+            sortRemindersByDate(prev.filter((reminder) => reminder.id !== deletedId))
+        );
     }
 
     function handleToggleComplete(id, newStatus) {
         setReminders((prev) =>
-        prev.map((reminder) =>
-            reminder.id === id ? { ...reminder, completed: newStatus } : reminder
-        )
+            sortRemindersByDate(
+                prev.map((reminder) =>
+                    reminder.id === id ? { ...reminder, completed: newStatus } : reminder
+                )
+            )
         );
     }
 
@@ -55,9 +72,11 @@ export default function SchedulePage() {
 
     function handleReminderUpdated(updatedReminder) {
         setReminders((prev) =>
-        prev.map((reminder) =>
-            reminder.id === updatedReminder.id ? updatedReminder : reminder
-        )
+            sortRemindersByDate(
+                prev.map((reminder) =>
+                    reminder.id === updatedReminder.id ? updatedReminder : reminder
+                )
+            )
         );
         setSelectedReminder(null);
     }
@@ -68,29 +87,29 @@ export default function SchedulePage() {
 
     return (
         <div>
-        <h1 className="page-title">Schedule</h1>
-        <p className="page-text">Track all upcoming pet care reminders.</p>
+            <h1 className="page-title">Schedule</h1>
+            <p className="page-text">Track all upcoming pet care reminders.</p>
 
-        {selectedReminder && (
-            <EditReminderForm
-            reminder={selectedReminder}
-            onUpdated={handleReminderUpdated}
-            onCancel={handleCancelEdit}
-            />
-        )}
+            {selectedReminder && (
+                <EditReminderForm
+                    reminder={selectedReminder}
+                    onUpdated={handleReminderUpdated}
+                    onCancel={handleCancelEdit}
+                />
+            )}
 
-        {loading ? (
-            <p>Loading reminders...</p>
-        ) : reminders.length === 0 ? (
-            <p>No reminders added yet.</p>
-        ) : (
-            <ReminderList
-            reminders={reminders}
-            onDelete={handleDeleteReminder}
-            onToggleComplete={handleToggleComplete}
-            onEdit={handleEditReminder}
-            />
-        )}
+            {loading ? (
+                <p>Loading reminders...</p>
+            ) : reminders.length === 0 ? (
+                <p>No reminders added yet.</p>
+            ) : (
+                <ReminderList
+                    reminders={reminders}
+                    onDelete={handleDeleteReminder}
+                    onToggleComplete={handleToggleComplete}
+                    onEdit={handleEditReminder}
+                />
+            )}
         </div>
     );
 }
