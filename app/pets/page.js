@@ -12,29 +12,29 @@ export default function PetsPage() {
     const [selectedPet, setSelectedPet] = useState(null);
 
     useEffect(() => {
-        async function fetchPets() {
-        try {
-            const petsQuery = query(
+        const petsQuery = query(
             collection(db, "pets"),
             orderBy("createdAt", "desc")
-            );
+        );
 
-            const querySnapshot = await getDocs(petsQuery);
+        const unsubscribe = onSnapshot(
+            petsQuery,
+            (querySnapshot) => {
+                const petData = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
 
-            const petData = querySnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-            }));
+                setPets(petData);
+                setLoading(false);
+            },
+            (error) => {
+                console.error("Error fetching pets:", error);
+                setLoading(false);
+            }
+        );
 
-            setPets(petData);
-        } catch (error) {
-            console.error("Error fetching pets:", error);
-        } finally {
-            setLoading(false);
-        }
-        }
-
-        fetchPets();
+        return () => unsubscribe();
     }, []);
 
     function handleDeletePet(id) {
@@ -47,9 +47,9 @@ export default function PetsPage() {
 
     function handlePetUpdated(updatedPet) {
         setPets((prev) =>
-        prev.map((pet) =>
-            pet.id === updatedPet.id ? updatedPet : pet
-        )
+            prev.map((pet) =>
+                pet.id === updatedPet.id ? updatedPet : pet
+            )
         );
         setSelectedPet(null);
     }
@@ -60,33 +60,33 @@ export default function PetsPage() {
 
     return (
         <div>
-        <h1 className="page-title">My Pets</h1>
-        <p className="page-text">View all pet profiles in one place.</p>
+            <h1 className="page-title">My Pets</h1>
+            <p className="page-text">View all pet profiles in one place.</p>
 
-        {selectedPet && (
-            <EditPetForm
-            pet={selectedPet}
-            onUpdated={handlePetUpdated}
-            onCancel={handleCancelEdit}
-            />
-        )}
-
-        {loading ? (
-            <p>Loading pets...</p>
-        ) : pets.length === 0 ? (
-            <p>No pets added yet.</p>
-        ) : (
-            <div className="two-column-grid">
-            {pets.map((pet) => (
-                <PetCard
-                key={pet.id}
-                pet={pet}
-                onDelete={handleDeletePet}
-                onEdit={handleEditPet}
+            {selectedPet && (
+                <EditPetForm
+                    pet={selectedPet}
+                    onUpdated={handlePetUpdated}
+                    onCancel={handleCancelEdit}
                 />
-            ))}
-            </div>
-        )}
+            )}
+
+            {loading ? (
+                <p>Loading pets...</p>
+            ) : pets.length === 0 ? (
+                <p>No pets added yet.</p>
+            ) : (
+                <div className="two-column-grid">
+                    {pets.map((pet) => (
+                        <PetCard
+                            key={pet.id}
+                            pet={pet}
+                            onDelete={handleDeletePet}
+                            onEdit={handleEditPet}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 }
