@@ -30,13 +30,26 @@ export default function ReminderItem({ reminder, onDelete, onToggleComplete, onE
         }
     }
 
+    const now = new Date();
+    const reminderDateTime = new Date(`${reminder.date}T${reminder.time}`);
+    const isOverdue = !reminder.completed && reminderDateTime < now;
+
+    let statusClass = "status-badge pending";
+    let statusText = "Pending";
+
+    if (reminder.completed) {
+        statusClass = "status-badge completed";
+        statusText = "Completed";
+    } else if (isOverdue) {
+        statusClass = "status-badge overdue";
+        statusText = "Overdue";
+    }
+
     return (
-        <div className="card">
+        <div className="card interactive-card">
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
                 <h3 className="card-title" style={{ marginBottom: 0 }}>{reminder.type}</h3>
-                <span className={reminder.completed ? "status-badge completed" : "status-badge pending"}>
-                    {reminder.completed ? "Completed" : "Pending"}
-                </span>
+                <span className={statusClass}>{statusText}</span>
             </div>
 
             <p><strong>Pet:</strong> {reminder.petName}</p>

@@ -14,6 +14,7 @@ export default function EditReminderForm({ reminder, onUpdated, onCancel }) {
     });
 
     const [message, setMessage] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     function handleChange(event) {
         const { name, value } = event.target;
@@ -26,6 +27,8 @@ export default function EditReminderForm({ reminder, onUpdated, onCancel }) {
 
     async function handleSubmit(event) {
         event.preventDefault();
+        if (isSubmitting) return;
+
         setMessage("");
 
         const trimmedPetName = formData.petName.trim();
@@ -50,6 +53,8 @@ export default function EditReminderForm({ reminder, onUpdated, onCancel }) {
             setMessage("Time is required.");
             return;
         }
+
+        setIsSubmitting(true);
 
         try {
             const updatedReminder = {
@@ -77,6 +82,7 @@ export default function EditReminderForm({ reminder, onUpdated, onCancel }) {
         } catch (error) {
             console.error("Error updating reminder:", error);
             setMessage("Failed to update reminder.");
+            setIsSubmitting(false);
         }
     }
 
@@ -134,10 +140,10 @@ export default function EditReminderForm({ reminder, onUpdated, onCancel }) {
                 />
 
                 <div className="card-actions">
-                    <button type="submit" className="primary-button">
-                        Save Changes
+                    <button type="submit" className="primary-button" disabled={isSubmitting}>
+                        {isSubmitting ? "Saving..." : "Save Changes"}
                     </button>
-                    <button type="button" onClick={onCancel} className="secondary-button">
+                    <button type="button" onClick={onCancel} className="secondary-button" disabled={isSubmitting}>
                         Cancel
                     </button>
                 </div>

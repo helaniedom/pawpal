@@ -17,6 +17,7 @@ export default function AddReminderPage() {
     });
 
     const [message, setMessage] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     function handleChange(event) {
         const { name, value } = event.target;
@@ -29,6 +30,8 @@ export default function AddReminderPage() {
 
     async function handleSubmit(event) {
         event.preventDefault();
+        if (isSubmitting) return;
+
         setMessage("");
 
         const trimmedPetName = formData.petName.trim();
@@ -53,6 +56,8 @@ export default function AddReminderPage() {
             setMessage("Time is required.");
             return;
         }
+
+        setIsSubmitting(true);
 
         try {
             await addDoc(collection(db, "reminders"), {
@@ -80,6 +85,7 @@ export default function AddReminderPage() {
         } catch (error) {
             console.error("Error adding reminder:", error);
             setMessage("Failed to add reminder.");
+            setIsSubmitting(false);
         }
     }
 
@@ -138,8 +144,8 @@ export default function AddReminderPage() {
                     onChange={handleChange}
                 />
 
-                <button type="submit" className="primary-button">
-                    Save Reminder
+                <button type="submit" className="primary-button" disabled={isSubmitting}>
+                    {isSubmitting ? "Saving..." : "Save Reminder"}
                 </button>
             </form>
 

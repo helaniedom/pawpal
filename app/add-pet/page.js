@@ -18,6 +18,7 @@ export default function AddPetPage() {
     });
 
     const [message, setMessage] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     function handleChange(event) {
         const { name, value } = event.target;
@@ -29,6 +30,8 @@ export default function AddPetPage() {
 
     async function handleSubmit(event) {
         event.preventDefault();
+        if (isSubmitting) return;
+
         setMessage("");
 
         const trimmedName = formData.name.trim();
@@ -50,6 +53,8 @@ export default function AddPetPage() {
             setMessage("Age cannot be negative.");
             return;
         }
+
+        setIsSubmitting(true);
 
         try {
             await addDoc(collection(db, "pets"), {
@@ -78,6 +83,7 @@ export default function AddPetPage() {
         } catch (error) {
             console.error("Error adding pet:", error);
             setMessage("Failed to add pet.");
+            setIsSubmitting(false);
         }
     }
 
@@ -158,8 +164,8 @@ export default function AddPetPage() {
                     <option value="/rabbit.png">Rabbit</option>
                 </select>
 
-                <button type="submit" className="primary-button">
-                    Save Pet
+                <button type="submit" className="primary-button" disabled={isSubmitting}>
+                    {isSubmitting ? "Saving..." : "Save Pet"}
                 </button>
             </form>
 
