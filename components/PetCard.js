@@ -17,26 +17,17 @@ export default function PetCard({ pet, onDelete, onEdit }) {
     }
 
     return (
-        <div className="card">
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginBottom: "16px",
-                    backgroundColor: "#fff7fb",
-                    border: "1px solid #fbcfe8",
-                    borderRadius: "18px",
-                    padding: "18px"
-                }}
-            >
+        <div className="card interactive-card">
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: "12px" }}>
                 <img
                     src={pet.imageUrl || "/paw.png"}
-                    alt={pet.name || "pet"}
+                    alt="pet"
                     style={{
-                        width: "150px",
-                        height: "150px",
-                        objectFit: "contain"
+                        width: "180px",
+                        height: "180px",
+                        borderRadius: "20%",
+                        objectFit: "contain",
+                        border: "2px solid #fbcfe8"
                     }}
                 />
             </div>
@@ -45,10 +36,10 @@ export default function PetCard({ pet, onDelete, onEdit }) {
                 {pet.name}
             </h2>
 
-            <p><strong>Type:</strong> {pet.type || "Not provided"}</p>
-            <p><strong>Breed:</strong> {pet.breed || "Not provided"}</p>
-            <p><strong>Age:</strong> {pet.age ?? "Not provided"}</p>
-            <p><strong>Notes:</strong> {pet.notes || "No notes yet"}</p>
+            <p><strong>Type:</strong> {pet.type}</p>
+            <p><strong>Breed:</strong> {pet.breed}</p>
+            <p><strong>Age:</strong> {pet.age}</p>
+            <p><strong>Notes:</strong> {pet.notes}</p>
 
             <div className="card-actions">
                 {onEdit && (
@@ -57,9 +48,11 @@ export default function PetCard({ pet, onDelete, onEdit }) {
                     </button>
                 )}
 
-                <button onClick={handleDelete} className="danger-button">
-                    Delete
-                </button>
+                {onDelete && (
+                    <button onClick={handleDelete} className="danger-button">
+                        Delete
+                    </button>
+                )}
             </div>
         </div>
     );
