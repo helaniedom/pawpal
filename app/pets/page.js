@@ -62,8 +62,8 @@ export default function PetsPage() {
     return (
         <div>
             <div className="section-block">
-                <h1 className="page-title">My Pets</h1>
-                <p className="page-text">View, edit, and manage all pet profiles in one place.</p>
+                <h1 className="page-title">Pet Profiles</h1>
+                <p className="page-text">Stay organized with your pets and their daily needs.</p>
             </div>
 
             {selectedPet && (

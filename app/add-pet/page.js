@@ -92,44 +92,99 @@ export default function AddPetPage() {
             <h1 className="page-title">Add a New Pet</h1>
 
             <form onSubmit={handleSubmit} className="form-layout">
+                <label
+                    htmlFor="name"
+                    style={{
+                        fontWeight: "600",
+                        color: "#374151",
+                        marginBottom: "-8px"
+                    }}
+                >
+                    Pet Name
+                </label>
+
                 <input
+                    id="name"
                     type="text"
                     name="name"
-                    placeholder="Pet Name"
                     value={formData.name}
                     onChange={handleChange}
                     required
                 />
 
+                <label
+                    htmlFor="type"
+                    style={{
+                        fontWeight: "600",
+                        color: "#374151",
+                        marginBottom: "-8px"
+                    }}
+                >
+                    Pet Type
+                </label>
+
                 <input
+                    id="type"
                     type="text"
                     name="type"
-                    placeholder="Pet Type"
                     value={formData.type}
                     onChange={handleChange}
                     required
                 />
 
+                <label
+                    htmlFor="breed"
+                    style={{
+                        fontWeight: "600",
+                        color: "#374151",
+                        marginBottom: "-8px"
+                    }}
+                >
+                    Breed
+                </label>
+
                 <input
+                    id="breed"
                     type="text"
                     name="breed"
-                    placeholder="Breed"
                     value={formData.breed}
                     onChange={handleChange}
                 />
 
+                <label
+                    htmlFor="age"
+                    style={{
+                        fontWeight: "600",
+                        color: "#374151",
+                        marginBottom: "-8px"
+                    }}
+                >
+                    Age
+                </label>
+
                 <input
+                    id="age"
                     type="number"
                     name="age"
-                    placeholder="Age"
                     min="0"
                     value={formData.age}
                     onChange={handleChange}
                 />
 
+                <label
+                    htmlFor="notes"
+                    style={{
+                        fontWeight: "600",
+                        color: "#374151",
+                        marginBottom: "-8px"
+                    }}
+                >
+                    Notes
+                </label>
+
                 <textarea
+                    id="notes"
                     name="notes"
-                    placeholder="Notes"
                     rows="4"
                     value={formData.notes}
                     onChange={handleChange}

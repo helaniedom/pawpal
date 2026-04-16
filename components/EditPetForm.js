@@ -15,7 +15,6 @@ export default function EditPetForm({ pet, onUpdated, onCancel }) {
     });
 
     const [message, setMessage] = useState("");
-    const [isSubmitting, setIsSubmitting] = useState(false);
 
     function handleChange(event) {
         const { name, value } = event.target;
@@ -27,8 +26,6 @@ export default function EditPetForm({ pet, onUpdated, onCancel }) {
 
     async function handleSubmit(event) {
         event.preventDefault();
-        if (isSubmitting) return;
-
         setMessage("");
 
         const trimmedName = formData.name.trim();
@@ -50,8 +47,6 @@ export default function EditPetForm({ pet, onUpdated, onCancel }) {
             setMessage("Age cannot be negative.");
             return;
         }
-
-        setIsSubmitting(true);
 
         try {
             const updatedPet = {
@@ -81,19 +76,11 @@ export default function EditPetForm({ pet, onUpdated, onCancel }) {
         } catch (error) {
             console.error("Error updating pet:", error);
             setMessage("Failed to update pet.");
-            setIsSubmitting(false);
         }
     }
 
     return (
-        <div
-            className="form-container"
-            style={{
-                marginBottom: "24px",
-                maxWidth: "100%",
-                width: "100%",
-            }}
-        >
+        <div className="form-container" style={{ marginBottom: "24px" }}>
             <h2 className="page-title" style={{ fontSize: "24px" }}>Edit Pet</h2>
 
             <form onSubmit={handleSubmit} className="form-layout">
@@ -151,19 +138,7 @@ export default function EditPetForm({ pet, onUpdated, onCancel }) {
                     />
                 </div>
 
-                <label
-                    htmlFor="imageUrl"
-                    style={{
-                        fontWeight: "600",
-                        color: "#374151",
-                        marginBottom: "-8px"
-                    }}
-                >
-                    Profile Picture
-                </label>
-
                 <select
-                    id="imageUrl"
                     name="imageUrl"
                     value={formData.imageUrl}
                     onChange={handleChange}
@@ -177,10 +152,10 @@ export default function EditPetForm({ pet, onUpdated, onCancel }) {
                 </select>
 
                 <div className="card-actions">
-                    <button type="submit" className="primary-button" disabled={isSubmitting}>
-                        {isSubmitting ? "Saving..." : "Save Changes"}
+                    <button type="submit" className="primary-button">
+                        Save Changes
                     </button>
-                    <button type="button" onClick={onCancel} className="secondary-button" disabled={isSubmitting}>
+                    <button type="button" onClick={onCancel} className="secondary-button">
                         Cancel
                     </button>
                 </div>
