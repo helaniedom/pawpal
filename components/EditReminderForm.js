@@ -196,10 +196,10 @@ export default function EditReminderForm({ reminder, onUpdated, onCancel }) {
                     <option value="Medication">Medication</option>
                     <option value="Vet Appointment">Vet Appointment</option>
                     <option value="Grooming Appointment">Grooming Appointment</option>
-                    <option value="Walk">Walk</option>
                     <option value="Bath">Bath</option>
                     <option value="Vaccination">Vaccination</option>
                     <option value="Training Session">Training Session</option>
+                    <option value="Other">Other</option>
                 </select>
 
                 <input
