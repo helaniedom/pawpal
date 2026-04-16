@@ -5,6 +5,7 @@ import { db } from "@/lib/firebase";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import PetCard from "@/components/PetCard";
 import EditPetForm from "@/components/EditPetForm";
+import Link from "next/link";
 
 export default function PetsPage() {
     const [pets, setPets] = useState([]);
@@ -60,8 +61,10 @@ export default function PetsPage() {
 
     return (
         <div>
-            <h1 className="page-title">My Pets</h1>
-            <p className="page-text">View all pet profiles in one place.</p>
+            <div className="section-block">
+                <h1 className="page-title">My Pets</h1>
+                <p className="page-text">View, edit, and manage all pet profiles in one place.</p>
+            </div>
 
             {selectedPet && (
                 <EditPetForm
@@ -74,7 +77,11 @@ export default function PetsPage() {
             {loading ? (
                 <p>Loading pets...</p>
             ) : pets.length === 0 ? (
-                <p>No pets added yet.</p>
+                <div className="empty-state">
+                    <h3>No pets added yet 🐾</h3>
+                    <p>Create your first pet profile to start using PawPal.</p>
+                    <Link href="/add-pet" className="primary-button">Add Pet</Link>
+                </div>
             ) : (
                 <div className="two-column-grid">
                     {pets.map((pet) => (

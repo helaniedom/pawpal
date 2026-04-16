@@ -5,6 +5,7 @@ import { db } from "@/lib/firebase";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import ReminderList from "@/components/ReminderList";
 import EditReminderForm from "@/components/EditReminderForm";
+import Link from "next/link";
 
 export default function SchedulePage() {
     const [reminders, setReminders] = useState([]);
@@ -79,8 +80,10 @@ export default function SchedulePage() {
 
     return (
         <div>
-            <h1 className="page-title">Schedule</h1>
-            <p className="page-text">Track all upcoming pet care reminders.</p>
+            <div className="section-block">
+                <h1 className="page-title">Schedule</h1>
+                <p className="page-text">Track all upcoming pet care reminders.</p>
+            </div>
 
             {selectedReminder && (
                 <EditReminderForm
@@ -93,7 +96,11 @@ export default function SchedulePage() {
             {loading ? (
                 <p>Loading reminders...</p>
             ) : reminders.length === 0 ? (
-                <p>No reminders added yet.</p>
+                <div className="empty-state">
+                    <h3>No reminders added yet 📅</h3>
+                    <p>Add reminders to stay organized with feeding, medicine, and appointments.</p>
+                    <Link href="/add-reminder" className="primary-button">Add Reminder</Link>
+                </div>
             ) : (
                 <ReminderList
                     reminders={reminders}

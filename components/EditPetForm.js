@@ -144,7 +144,19 @@ export default function EditPetForm({ pet, onUpdated, onCancel }) {
                     />
                 </div>
 
+                <label
+                    htmlFor="imageUrl"
+                    style={{
+                        fontWeight: "600",
+                        color: "#374151",
+                        marginBottom: "-8px"
+                    }}
+                >
+                    Profile Picture
+                </label>
+
                 <select
+                    id="imageUrl"
                     name="imageUrl"
                     value={formData.imageUrl}
                     onChange={handleChange}
