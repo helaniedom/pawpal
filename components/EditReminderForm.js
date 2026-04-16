@@ -1,12 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { db } from "@/lib/firebase";
-import { doc, updateDoc } from "firebase/firestore";
+import {
+    doc,
+    updateDoc,
+    collection,
+    getDocs,
+    query,
+    orderBy
+} from "firebase/firestore";
 
 export default function EditReminderForm({ reminder, onUpdated, onCancel }) {
+    const [pets, setPets] = useState([]);
+    const [loadingPets, setLoadingPets] = useState(true);
+
     const [formData, setFormData] = useState({
-        petName: reminder.petName || "",
+        petId: reminder.petId || "",
         type: reminder.type || "",
         date: reminder.date || "",
         time: reminder.time || "",
@@ -15,6 +25,47 @@ export default function EditReminderForm({ reminder, onUpdated, onCancel }) {
 
     const [message, setMessage] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    useEffect(() => {
+        async function fetchPets() {
+            try {
+                const petsQuery = query(
+                    collection(db, "pets"),
+                    orderBy("createdAt", "desc")
+                );
+
+                const querySnapshot = await getDocs(petsQuery);
+
+                const petData = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+
+                setPets(petData);
+
+                if (!reminder.petId && reminder.petName) {
+                    const matchedPet = petData.find(
+                        (pet) =>
+                            pet.name &&
+                            pet.name.toLowerCase().trim() === reminder.petName.toLowerCase().trim()
+                    );
+
+                    if (matchedPet) {
+                        setFormData((prev) => ({
+                            ...prev,
+                            petId: matchedPet.id,
+                        }));
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching pets:", error);
+            } finally {
+                setLoadingPets(false);
+            }
+        }
+
+        fetchPets();
+    }, [reminder.petId, reminder.petName]);
 
     function handleChange(event) {
         const { name, value } = event.target;
@@ -31,11 +82,10 @@ export default function EditReminderForm({ reminder, onUpdated, onCancel }) {
 
         setMessage("");
 
-        const trimmedPetName = formData.petName.trim();
         const trimmedDescription = formData.description.trim();
 
-        if (!trimmedPetName) {
-            setMessage("Pet name is required.");
+        if (!formData.petId) {
+            setMessage("Please select a pet.");
             return;
         }
 
@@ -54,12 +104,20 @@ export default function EditReminderForm({ reminder, onUpdated, onCancel }) {
             return;
         }
 
+        const selectedPet = pets.find((pet) => pet.id === formData.petId);
+
+        if (!selectedPet) {
+            setMessage("Selected pet could not be found.");
+            return;
+        }
+
         setIsSubmitting(true);
 
         try {
             const updatedReminder = {
                 ...reminder,
-                petName: trimmedPetName,
+                petId: selectedPet.id,
+                petName: selectedPet.name,
                 type: formData.type,
                 date: formData.date,
                 time: formData.time,
@@ -67,6 +125,7 @@ export default function EditReminderForm({ reminder, onUpdated, onCancel }) {
             };
 
             await updateDoc(doc(db, "reminders", reminder.id), {
+                petId: updatedReminder.petId,
                 petName: updatedReminder.petName,
                 type: updatedReminder.type,
                 date: updatedReminder.date,
@@ -87,17 +146,45 @@ export default function EditReminderForm({ reminder, onUpdated, onCancel }) {
     }
 
     return (
-        <div className="form-container" style={{ marginBottom: "24px" }}>
+        <div
+            className="form-container"
+            style={{
+                marginBottom: "24px",
+                maxWidth: "100%",
+                width: "100%",
+            }}
+        >
             <h2 className="page-title" style={{ fontSize: "24px" }}>Edit Reminder</h2>
 
             <form onSubmit={handleSubmit} className="form-layout">
-                <input
-                    type="text"
-                    name="petName"
-                    value={formData.petName}
+                <label
+                    htmlFor="petId"
+                    style={{
+                        fontWeight: "600",
+                        color: "#374151",
+                        marginBottom: "-8px"
+                    }}
+                >
+                    Pet
+                </label>
+
+                <select
+                    id="petId"
+                    name="petId"
+                    value={formData.petId}
                     onChange={handleChange}
                     required
-                />
+                    disabled={loadingPets || pets.length === 0}
+                >
+                    <option value="">
+                        {loadingPets ? "Loading pets..." : pets.length === 0 ? "No pets available" : "Select a pet"}
+                    </option>
+                    {pets.map((pet) => (
+                        <option key={pet.id} value={pet.id}>
+                            {pet.name}
+                        </option>
+                    ))}
+                </select>
 
                 <select
                     name="type"
@@ -140,7 +227,7 @@ export default function EditReminderForm({ reminder, onUpdated, onCancel }) {
                 />
 
                 <div className="card-actions">
-                    <button type="submit" className="primary-button" disabled={isSubmitting}>
+                    <button type="submit" className="primary-button" disabled={isSubmitting || loadingPets || pets.length === 0}>
                         {isSubmitting ? "Saving..." : "Save Changes"}
                     </button>
                     <button type="button" onClick={onCancel} className="secondary-button" disabled={isSubmitting}>

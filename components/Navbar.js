@@ -4,8 +4,9 @@ export default function Navbar() {
     return (
         <nav>
             <div className="nav-container">
-                <Link href="/" className="logo">
-                    PawPal
+                <Link href="/" className="brand-wrap">
+                    <img src="/pawpal.png" alt="PawPal logo" className="brand-icon" />
+                    <span className="logo">PawPal</span>
                 </Link>
 
                 <div className="nav-links">

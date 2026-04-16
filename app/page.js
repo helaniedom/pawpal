@@ -62,6 +62,7 @@ export default function HomePage() {
                 const reminderData = remindersSnapshot.docs.map((doc) => ({
                     id: doc.id,
                     ...doc.data(),
+                    petName: doc.data().petName || "Unknown Pet",
                 }));
 
                 const sortedReminders = sortRemindersByDate(reminderData).slice(0, 5);
