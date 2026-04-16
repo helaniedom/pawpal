@@ -18,16 +18,25 @@ export default function PetCard({ pet, onDelete, onEdit }) {
 
     return (
         <div className="card">
-            <div style={{ display: "flex", justifyContent: "center", marginBottom: "12px" }}>
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginBottom: "16px",
+                    backgroundColor: "#fff7fb",
+                    border: "1px solid #fbcfe8",
+                    borderRadius: "18px",
+                    padding: "18px"
+                }}
+            >
                 <img
                     src={pet.imageUrl || "/paw.png"}
-                    alt="pet"
+                    alt={pet.name || "pet"}
                     style={{
-                        width: "180px",
-                        height: "180px",
-                        borderRadius: "20%",
-                        objectFit: "contain",
-                        border: "2px solid #fbcfe8"
+                        width: "150px",
+                        height: "150px",
+                        objectFit: "contain"
                     }}
                 />
             </div>
@@ -36,10 +45,10 @@ export default function PetCard({ pet, onDelete, onEdit }) {
                 {pet.name}
             </h2>
 
-            <p><strong>Type:</strong> {pet.type}</p>
-            <p><strong>Breed:</strong> {pet.breed}</p>
-            <p><strong>Age:</strong> {pet.age}</p>
-            <p><strong>Notes:</strong> {pet.notes}</p>
+            <p><strong>Type:</strong> {pet.type || "Not provided"}</p>
+            <p><strong>Breed:</strong> {pet.breed || "Not provided"}</p>
+            <p><strong>Age:</strong> {pet.age ?? "Not provided"}</p>
+            <p><strong>Notes:</strong> {pet.notes || "No notes yet"}</p>
 
             <div className="card-actions">
                 {onEdit && (
