@@ -52,22 +52,28 @@ export default function EditReminderForm({ reminder, onUpdated, onCancel }) {
         }
 
         try {
-            await updateDoc(doc(db, "reminders", reminder.id), {
-                petName: trimmedPetName,
-                type: formData.type,
-                date: formData.date,
-                time: formData.time,
-                description: trimmedDescription,
-            });
-
-            onUpdated({
+            const updatedReminder = {
                 ...reminder,
                 petName: trimmedPetName,
                 type: formData.type,
                 date: formData.date,
                 time: formData.time,
                 description: trimmedDescription,
+            };
+
+            await updateDoc(doc(db, "reminders", reminder.id), {
+                petName: updatedReminder.petName,
+                type: updatedReminder.type,
+                date: updatedReminder.date,
+                time: updatedReminder.time,
+                description: updatedReminder.description,
             });
+
+            setMessage("Reminder updated successfully.");
+
+            setTimeout(() => {
+                onUpdated(updatedReminder);
+            }, 1000);
         } catch (error) {
             console.error("Error updating reminder:", error);
             setMessage("Failed to update reminder.");

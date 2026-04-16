@@ -28,21 +28,51 @@ export default function EditPetForm({ pet, onUpdated, onCancel }) {
         event.preventDefault();
         setMessage("");
 
+        const trimmedName = formData.name.trim();
+        const trimmedType = formData.type.trim();
+        const trimmedBreed = formData.breed.trim();
+        const trimmedNotes = formData.notes.trim();
+
+        if (!trimmedName) {
+            setMessage("Pet name is required.");
+            return;
+        }
+
+        if (!trimmedType) {
+            setMessage("Pet type is required.");
+            return;
+        }
+
+        if (formData.age !== "" && Number(formData.age) < 0) {
+            setMessage("Age cannot be negative.");
+            return;
+        }
+
         try {
-            await updateDoc(doc(db, "pets", pet.id), {
-                name: formData.name,
-                type: formData.type,
-                breed: formData.breed,
-                age: Number(formData.age) || 0,
-                notes: formData.notes,
+            const updatedPet = {
+                ...pet,
+                name: trimmedName,
+                type: trimmedType,
+                breed: trimmedBreed,
+                age: formData.age === "" ? 0 : Number(formData.age),
+                notes: trimmedNotes,
                 imageUrl: formData.imageUrl,
+            };
+
+            await updateDoc(doc(db, "pets", pet.id), {
+                name: updatedPet.name,
+                type: updatedPet.type,
+                breed: updatedPet.breed,
+                age: updatedPet.age,
+                notes: updatedPet.notes,
+                imageUrl: updatedPet.imageUrl,
             });
 
-            onUpdated({
-                ...pet,
-                ...formData,
-                age: Number(formData.age) || 0,
-            });
+            setMessage("Pet updated successfully.");
+
+            setTimeout(() => {
+                onUpdated(updatedPet);
+            }, 1000);
         } catch (error) {
             console.error("Error updating pet:", error);
             setMessage("Failed to update pet.");
@@ -80,6 +110,7 @@ export default function EditPetForm({ pet, onUpdated, onCancel }) {
                 <input
                     type="number"
                     name="age"
+                    min="0"
                     value={formData.age}
                     onChange={handleChange}
                 />

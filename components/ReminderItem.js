@@ -32,7 +32,13 @@ export default function ReminderItem({ reminder, onDelete, onToggleComplete, onE
 
     return (
         <div className="card">
-            <h3 className="card-title">{reminder.type}</h3>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+                <h3 className="card-title" style={{ marginBottom: 0 }}>{reminder.type}</h3>
+                <span className={reminder.completed ? "status-badge completed" : "status-badge pending"}>
+                    {reminder.completed ? "Completed" : "Pending"}
+                </span>
+            </div>
+
             <p><strong>Pet:</strong> {reminder.petName}</p>
             <p>
                 <strong>Date:</strong>{" "}
@@ -40,9 +46,6 @@ export default function ReminderItem({ reminder, onDelete, onToggleComplete, onE
             </p>
             <p><strong>Time:</strong> {reminder.time}</p>
             <p><strong>Details:</strong> {reminder.description}</p>
-            <p>
-                <strong>Status:</strong> {reminder.completed ? "Completed" : "Pending"}
-            </p>
 
             <div className="card-actions">
                 <button onClick={handleToggleComplete} className="secondary-button">

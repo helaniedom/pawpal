@@ -31,13 +31,36 @@ export default function AddReminderPage() {
         event.preventDefault();
         setMessage("");
 
+        const trimmedPetName = formData.petName.trim();
+        const trimmedDescription = formData.description.trim();
+
+        if (!trimmedPetName) {
+            setMessage("Pet name is required.");
+            return;
+        }
+
+        if (!formData.type) {
+            setMessage("Reminder type is required.");
+            return;
+        }
+
+        if (!formData.date) {
+            setMessage("Date is required.");
+            return;
+        }
+
+        if (!formData.time) {
+            setMessage("Time is required.");
+            return;
+        }
+
         try {
             await addDoc(collection(db, "reminders"), {
-                petName: formData.petName,
+                petName: trimmedPetName,
                 type: formData.type,
                 date: formData.date,
                 time: formData.time,
-                description: formData.description,
+                description: trimmedDescription,
                 completed: false,
                 createdAt: Timestamp.now(),
             });
@@ -65,73 +88,55 @@ export default function AddReminderPage() {
             <h1 className="page-title">Add Reminder</h1>
 
             <form onSubmit={handleSubmit} className="form-layout">
-                <div>
-                    <label htmlFor="petName">Pet Name</label>
-                    <input
-                        id="petName"
-                        type="text"
-                        name="petName"
-                        value={formData.petName}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
+                <input
+                    type="text"
+                    name="petName"
+                    placeholder="Pet Name"
+                    value={formData.petName}
+                    onChange={handleChange}
+                    required
+                />
 
-                <div>
-                    <label htmlFor="type">Reminder Type</label>
-                    <select
-                        id="type"
-                        name="type"
-                        value={formData.type}
-                        onChange={handleChange}
-                        required
-                    >
-                        <option value="">Select Reminder Type</option>
-                        <option value="Feeding">Feeding</option>
-                        <option value="Medication">Medication</option>
-                        <option value="Vet Appointment">Vet Appointment</option>
-                        <option value="Grooming Appointment">Grooming Appointment</option>
-                        <option value="Walk">Walk</option>
-                        <option value="Bath">Bath</option>
-                        <option value="Vaccination">Vaccination</option>
-                        <option value="Training Session">Training Session</option>
-                    </select>
-                </div>
+                <select
+                    name="type"
+                    value={formData.type}
+                    onChange={handleChange}
+                    required
+                >
+                    <option value="">Select Reminder Type</option>
+                    <option value="Feeding">Feeding</option>
+                    <option value="Medication">Medication</option>
+                    <option value="Vet Appointment">Vet Appointment</option>
+                    <option value="Grooming Appointment">Grooming Appointment</option>
+                    <option value="Walk">Walk</option>
+                    <option value="Bath">Bath</option>
+                    <option value="Vaccination">Vaccination</option>
+                    <option value="Training Session">Training Session</option>
+                </select>
 
-                <div>
-                    <label htmlFor="date">Date</label>
-                    <input
-                        id="date"
-                        type="date"
-                        name="date"
-                        value={formData.date}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
+                <input
+                    type="date"
+                    name="date"
+                    value={formData.date}
+                    onChange={handleChange}
+                    required
+                />
 
-                <div>
-                    <label htmlFor="time">Time</label>
-                    <input
-                        id="time"
-                        type="time"
-                        name="time"
-                        value={formData.time}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
+                <input
+                    type="time"
+                    name="time"
+                    value={formData.time}
+                    onChange={handleChange}
+                    required
+                />
 
-                <div>
-                    <label htmlFor="description">Reminder Details</label>
-                    <textarea
-                        id="description"
-                        name="description"
-                        rows="4"
-                        value={formData.description}
-                        onChange={handleChange}
-                    />
-                </div>
+                <textarea
+                    name="description"
+                    placeholder="Reminder Details"
+                    rows="4"
+                    value={formData.description}
+                    onChange={handleChange}
+                />
 
                 <button type="submit" className="primary-button">
                     Save Reminder
