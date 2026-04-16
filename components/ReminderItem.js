@@ -60,18 +60,24 @@ export default function ReminderItem({ reminder, onDelete, onToggleComplete, onE
             <p><strong>Time:</strong> {reminder.time}</p>
             <p><strong>Details:</strong> {reminder.description}</p>
 
-            <div className="card-actions">
-                <button onClick={handleToggleComplete} className="secondary-button">
-                    {reminder.completed ? "Mark Pending" : "Mark Complete"}
-                </button>
+            <div className="card-actions" style={{ justifyContent: "flex-start" }}>
+                {onToggleComplete && (
+                    <button onClick={handleToggleComplete} className="secondary-button">
+                        {reminder.completed ? "Mark Pending" : "Mark Complete"}
+                    </button>
+                )}
 
-                <button onClick={() => onEdit && onEdit(reminder)} className="edit-button">
-                    Edit
-                </button>
+                {onEdit && (
+                    <button onClick={() => onEdit(reminder)} className="edit-button">
+                        Edit
+                    </button>
+                )}
 
-                <button onClick={handleDelete} className="danger-button">
-                    Delete
-                </button>
+                {onDelete && (
+                    <button onClick={handleDelete} className="danger-button">
+                        Delete
+                    </button>
+                )}
             </div>
         </div>
     );

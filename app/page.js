@@ -59,11 +59,10 @@ export default function HomePage() {
         const unsubscribeReminders = onSnapshot(
             remindersQuery,
             (remindersSnapshot) => {
-                const reminderData = remindersSnapshot.docs
-                    .map((doc) => ({
-                        id: doc.id,
-                        ...doc.data(),
-                    }));
+                const reminderData = remindersSnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
 
                 const sortedReminders = sortRemindersByDate(reminderData).slice(0, 5);
 
@@ -89,6 +88,16 @@ export default function HomePage() {
             unsubscribeReminders();
         };
     }, []);
+
+    function handleToggleComplete(id, newStatus) {
+        setReminders((prev) =>
+            sortRemindersByDate(
+                prev.map((reminder) =>
+                    reminder.id === id ? { ...reminder, completed: newStatus } : reminder
+                )
+            )
+        );
+    }
 
     return (
         <div>
@@ -119,7 +128,10 @@ export default function HomePage() {
                         {reminders.length === 0 ? (
                             <p>No reminders added yet.</p>
                         ) : (
-                            <ReminderList reminders={reminders} />
+                            <ReminderList
+                                reminders={reminders}
+                                onToggleComplete={handleToggleComplete}
+                            />
                         )}
                     </section>
                 </>
