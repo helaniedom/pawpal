@@ -173,7 +173,6 @@ export default function AddReminderPage() {
                     required
                 >
                     <option value="">Select Reminder Type</option>
-                    <option value="Feeding">Feeding</option>
                     <option value="Medication">Medication</option>
                     <option value="Vet Appointment">Vet Appointment</option>
                     <option value="Grooming Appointment">Grooming Appointment</option>

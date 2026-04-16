@@ -127,11 +127,12 @@ export default function ReminderItem({ reminder, onDelete, onToggleComplete, onE
 
                     <div
                         style={{
-                            width: "70px",
+                            width: "44px",
                             display: "flex",
-                            justifyContent: "center",
+                            justifyContent: "flex-end",
                             alignItems: "center",
-                            paddingTop: "48px"
+                            paddingTop: "48px",
+                            marginLeft: "auto"
                         }}
                     >
                         {renderCheckbox()}
@@ -159,12 +160,13 @@ export default function ReminderItem({ reminder, onDelete, onToggleComplete, onE
 
                     <div
                         style={{
-                            width: "170px",
+                            width: "140px",
                             display: "flex",
                             flexDirection: "column",
                             alignItems: "flex-end",
                             gap: "12px",
-                            paddingTop: "48px"
+                            paddingTop: "48px",
+                            marginLeft: "auto"
                         }}
                     >
                         <div
