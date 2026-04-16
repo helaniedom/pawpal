@@ -10,6 +10,27 @@ export default function HomePage() {
     const [pets, setPets] = useState([]);
     const [reminders, setReminders] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [randomGreeting, setRandomGreeting] = useState("");
+
+    const greetings = [
+        "Welcome back, human. We demand snacks.",
+        "Welcome, trusted food provider.",
+        "Hello human. You may pet us now.",
+        "Welcome back. We’ve been judging you.",
+        "Greetings, caretaker. The pets are watching.",
+        "Welcome back, servant of the pets.",
+        "Hello human. Your shift has started.",
+        "You’re late. We noticed.",
+        "Welcome back. Food first, questions later.",
+        "The council of pets has convened."
+    ];
+
+    const today = new Date().toLocaleDateString("en-US", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    });
 
     function sortRemindersByDate(reminderList) {
         return [...reminderList].sort((a, b) => {
@@ -20,6 +41,9 @@ export default function HomePage() {
     }
 
     useEffect(() => {
+        const greeting = greetings[Math.floor(Math.random() * greetings.length)];
+        setRandomGreeting(greeting);
+
         const petsQuery = query(
             collection(db, "pets"),
             orderBy("createdAt", "desc"),
@@ -102,10 +126,13 @@ export default function HomePage() {
 
     return (
         <div>
-            <h1 className="page-title">PawPal Dashboard</h1>
-            <p className="page-text">
-                Manage your pets and stay on top of important reminders.
-            </p>
+            <div className="section-block">
+                <h1 className="page-title">{randomGreeting || "Welcome back, human."}</h1>
+                <p className="page-text">{today}</p>
+                <p className="page-text">
+                    Manage your pets and stay on top of important reminders.
+                </p>
+            </div>
 
             {loading ? (
                 <p>Loading dashboard...</p>
