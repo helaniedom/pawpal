@@ -11,12 +11,13 @@ export default function EditPetForm({ pet, onUpdated, onCancel }) {
         breed: pet.breed || "",
         age: pet.age || "",
         notes: pet.notes || "",
+        imageUrl: pet.imageUrl || "",
     });
 
     const [message, setMessage] = useState("");
 
-    function handleChange(e) {
-        const { name, value } = e.target;
+    function handleChange(event) {
+        const { name, value } = event.target;
 
         setFormData((prev) => ({
         ...prev,
@@ -24,8 +25,8 @@ export default function EditPetForm({ pet, onUpdated, onCancel }) {
         }));
     }
 
-    async function handleSubmit(e) {
-        e.preventDefault();
+    async function handleSubmit(event) {
+        event.preventDefault();
         setMessage("");
 
         try {
@@ -35,6 +36,7 @@ export default function EditPetForm({ pet, onUpdated, onCancel }) {
             breed: formData.breed,
             age: Number(formData.age) || 0,
             notes: formData.notes,
+            imageUrl: formData.imageUrl,
         });
 
         onUpdated({
@@ -53,15 +55,58 @@ export default function EditPetForm({ pet, onUpdated, onCancel }) {
         <h2 className="page-title" style={{ fontSize: "24px" }}>Edit Pet</h2>
 
         <form onSubmit={handleSubmit} className="form-layout">
-            <input name="name" value={formData.name} onChange={handleChange} required />
-            <input name="type" value={formData.type} onChange={handleChange} required />
-            <input name="breed" value={formData.breed} onChange={handleChange} />
-            <input name="age" type="number" value={formData.age} onChange={handleChange} />
-            <textarea name="notes" rows="4" value={formData.notes} onChange={handleChange} />
+            <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+            />
+
+            <input
+            type="text"
+            name="type"
+            value={formData.type}
+            onChange={handleChange}
+            required
+            />
+
+            <input
+            type="text"
+            name="breed"
+            value={formData.breed}
+            onChange={handleChange}
+            />
+
+            <input
+            type="number"
+            name="age"
+            value={formData.age}
+            onChange={handleChange}
+            />
+
+            <textarea
+            name="notes"
+            rows="4"
+            value={formData.notes}
+            onChange={handleChange}
+            />
+
+            <input
+            type="text"
+            name="imageUrl"
+            placeholder="Image URL (optional)"
+            value={formData.imageUrl}
+            onChange={handleChange}
+            />
 
             <div className="card-actions">
-            <button type="submit" className="primary-button">Save Changes</button>
-            <button type="button" onClick={onCancel} className="secondary-button">Cancel</button>
+            <button type="submit" className="primary-button">
+                Save Changes
+            </button>
+            <button type="button" onClick={onCancel} className="secondary-button">
+                Cancel
+            </button>
             </div>
         </form>
 

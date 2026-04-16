@@ -18,7 +18,24 @@ export default function PetCard({ pet, onDelete, onEdit }) {
 
     return (
         <div className="card">
-        <h2 className="card-title">{pet.name}</h2>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: "12px" }}>
+            <img
+            src={pet.imageUrl || "/chloe.png"}
+            alt="pet"
+            style={{
+                width: "90px",
+                height: "90px",
+                borderRadius: "50%",
+                objectFit: "cover",
+                border: "2px solid #fbcfe8"
+            }}
+            />
+        </div>
+
+        <h2 className="card-title" style={{ textAlign: "center" }}>
+            {pet.name}
+        </h2>
+
         <p><strong>Type:</strong> {pet.type}</p>
         <p><strong>Breed:</strong> {pet.breed}</p>
         <p><strong>Age:</strong> {pet.age}</p>

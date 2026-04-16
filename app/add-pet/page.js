@@ -14,6 +14,7 @@ export default function AddPetPage() {
         breed: "",
         age: "",
         notes: "",
+        imageUrl: "", 
     });
 
     const [message, setMessage] = useState("");
@@ -37,6 +38,7 @@ export default function AddPetPage() {
             breed: formData.breed,
             age: Number(formData.age) || 0,
             notes: formData.notes,
+            imageUrl: formData.imageUrl, 
             createdAt: Timestamp.now(),
         });
 
@@ -48,6 +50,7 @@ export default function AddPetPage() {
             breed: "",
             age: "",
             notes: "",
+            imageUrl: "", 
         });
 
         router.push("/pets");
@@ -102,6 +105,14 @@ export default function AddPetPage() {
             placeholder="Notes"
             rows="4"
             value={formData.notes}
+            onChange={handleChange}
+            />
+
+            <input
+            type="text"
+            name="imageUrl"
+            placeholder="Image URL (optional)"
+            value={formData.imageUrl}
             onChange={handleChange}
             />
 
