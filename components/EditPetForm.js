@@ -86,7 +86,14 @@ export default function EditPetForm({ pet, onUpdated, onCancel }) {
     }
 
     return (
-        <div className="form-container" style={{ marginBottom: "24px" }}>
+        <div
+            className="form-container"
+            style={{
+                marginBottom: "24px",
+                maxWidth: "100%",
+                width: "100%",
+            }}
+        >
             <h2 className="page-title" style={{ fontSize: "24px" }}>Edit Pet</h2>
 
             <form onSubmit={handleSubmit} className="form-layout">

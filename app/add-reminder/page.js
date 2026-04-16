@@ -1,15 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { db } from "@/lib/firebase";
-import { addDoc, collection, Timestamp } from "firebase/firestore";
+import {
+    addDoc,
+    collection,
+    Timestamp,
+    getDocs,
+    query,
+    orderBy
+} from "firebase/firestore";
 
 export default function AddReminderPage() {
     const router = useRouter();
 
+    const [pets, setPets] = useState([]);
+    const [loadingPets, setLoadingPets] = useState(true);
+
     const [formData, setFormData] = useState({
-        petName: "",
+        petId: "",
         type: "",
         date: "",
         time: "",
@@ -18,6 +28,32 @@ export default function AddReminderPage() {
 
     const [message, setMessage] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    useEffect(() => {
+        async function fetchPets() {
+            try {
+                const petsQuery = query(
+                    collection(db, "pets"),
+                    orderBy("createdAt", "desc")
+                );
+
+                const querySnapshot = await getDocs(petsQuery);
+
+                const petData = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+
+                setPets(petData);
+            } catch (error) {
+                console.error("Error fetching pets:", error);
+            } finally {
+                setLoadingPets(false);
+            }
+        }
+
+        fetchPets();
+    }, []);
 
     function handleChange(event) {
         const { name, value } = event.target;
@@ -34,11 +70,10 @@ export default function AddReminderPage() {
 
         setMessage("");
 
-        const trimmedPetName = formData.petName.trim();
         const trimmedDescription = formData.description.trim();
 
-        if (!trimmedPetName) {
-            setMessage("Pet name is required.");
+        if (!formData.petId) {
+            setMessage("Please select a pet.");
             return;
         }
 
@@ -57,11 +92,19 @@ export default function AddReminderPage() {
             return;
         }
 
+        const selectedPet = pets.find((pet) => pet.id === formData.petId);
+
+        if (!selectedPet) {
+            setMessage("Selected pet could not be found.");
+            return;
+        }
+
         setIsSubmitting(true);
 
         try {
             await addDoc(collection(db, "reminders"), {
-                petName: trimmedPetName,
+                petId: selectedPet.id,
+                petName: selectedPet.name,
                 type: formData.type,
                 date: formData.date,
                 time: formData.time,
@@ -73,7 +116,7 @@ export default function AddReminderPage() {
             setMessage("Reminder added successfully.");
 
             setFormData({
-                petName: "",
+                petId: "",
                 type: "",
                 date: "",
                 time: "",
@@ -94,14 +137,34 @@ export default function AddReminderPage() {
             <h1 className="page-title">Add Reminder</h1>
 
             <form onSubmit={handleSubmit} className="form-layout">
-                <input
-                    type="text"
-                    name="petName"
-                    placeholder="Pet Name"
-                    value={formData.petName}
+                <label
+                    htmlFor="petId"
+                    style={{
+                        fontWeight: "600",
+                        color: "#374151",
+                        marginBottom: "-8px"
+                    }}
+                >
+                    Pet
+                </label>
+
+                <select
+                    id="petId"
+                    name="petId"
+                    value={formData.petId}
                     onChange={handleChange}
                     required
-                />
+                    disabled={loadingPets || pets.length === 0}
+                >
+                    <option value="">
+                        {loadingPets ? "Loading pets..." : pets.length === 0 ? "No pets available" : "Select a pet"}
+                    </option>
+                    {pets.map((pet) => (
+                        <option key={pet.id} value={pet.id}>
+                            {pet.name}
+                        </option>
+                    ))}
+                </select>
 
                 <select
                     name="type"
@@ -144,7 +207,7 @@ export default function AddReminderPage() {
                     onChange={handleChange}
                 />
 
-                <button type="submit" className="primary-button" disabled={isSubmitting}>
+                <button type="submit" className="primary-button" disabled={isSubmitting || loadingPets || pets.length === 0}>
                     {isSubmitting ? "Saving..." : "Save Reminder"}
                 </button>
             </form>

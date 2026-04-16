@@ -29,6 +29,7 @@ export default function SchedulePage() {
                 const reminderData = querySnapshot.docs.map((doc) => ({
                     id: doc.id,
                     ...doc.data(),
+                    petName: doc.data().petName || "Unknown Pet",
                 }));
 
                 setReminders(sortRemindersByDate(reminderData));
