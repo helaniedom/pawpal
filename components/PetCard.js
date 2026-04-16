@@ -18,14 +18,14 @@ export default function PetCard({ pet, onDelete, onEdit }) {
 
     return (
         <div className="card">
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: "12px" }}>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: "16px" }}>
             <img
             src={pet.imageUrl || "/paw.png"}
             alt="pet"
             style={{
-                width: "90px",
-                height: "90px",
-                borderRadius: "50%",
+                width: "180px",
+                height: "180px",
+                borderRadius: "20%",
                 objectFit: "cover",
                 border: "2px solid #fbcfe8"
             }}
