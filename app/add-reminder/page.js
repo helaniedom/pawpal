@@ -84,6 +84,7 @@ export default function AddReminderPage() {
             <option value="Feeding">Feeding</option>
             <option value="Medication">Medication</option>
             <option value="Vet Appointment">Vet Appointment</option>
+            <option value="Grooming Appointment">Grooming Appointment</option>
             </select>
 
             <input
