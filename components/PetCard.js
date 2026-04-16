@@ -9,49 +9,49 @@ export default function PetCard({ pet, onDelete, onEdit }) {
         if (!confirmed) return;
 
         try {
-        await deleteDoc(doc(db, "pets", pet.id));
-        if (onDelete) onDelete(pet.id);
+            await deleteDoc(doc(db, "pets", pet.id));
+            if (onDelete) onDelete(pet.id);
         } catch (error) {
-        console.error("Error deleting pet:", error);
+            console.error("Error deleting pet:", error);
         }
     }
 
     return (
         <div className="card">
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: "16px" }}>
-            <img
-            src={pet.imageUrl || "/paw.png"}
-            alt="pet"
-            style={{
-                width: "180px",
-                height: "180px",
-                borderRadius: "20%",
-                objectFit: "cover",
-                border: "2px solid #fbcfe8"
-            }}
-            />
-        </div>
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: "12px" }}>
+                <img
+                    src={pet.imageUrl || "/paw.png"}
+                    alt="pet"
+                    style={{
+                        width: "180px",
+                        height: "180px",
+                        borderRadius: "20%",
+                        objectFit: "contain",
+                        border: "2px solid #fbcfe8"
+                    }}
+                />
+            </div>
 
-        <h2 className="card-title" style={{ textAlign: "center" }}>
-            {pet.name}
-        </h2>
+            <h2 className="card-title" style={{ textAlign: "center" }}>
+                {pet.name}
+            </h2>
 
-        <p><strong>Type:</strong> {pet.type}</p>
-        <p><strong>Breed:</strong> {pet.breed}</p>
-        <p><strong>Age:</strong> {pet.age}</p>
-        <p><strong>Notes:</strong> {pet.notes}</p>
+            <p><strong>Type:</strong> {pet.type}</p>
+            <p><strong>Breed:</strong> {pet.breed}</p>
+            <p><strong>Age:</strong> {pet.age}</p>
+            <p><strong>Notes:</strong> {pet.notes}</p>
 
-        <div className="card-actions">
-            {onEdit && (
-            <button onClick={() => onEdit(pet)} className="edit-button">
-                Edit
-            </button>
-            )}
+            <div className="card-actions">
+                {onEdit && (
+                    <button onClick={() => onEdit(pet)} className="edit-button">
+                        Edit
+                    </button>
+                )}
 
-            <button onClick={handleDelete} className="danger-button">
-            Delete
-            </button>
-        </div>
+                <button onClick={handleDelete} className="danger-button">
+                    Delete
+                </button>
+            </div>
         </div>
     );
 }
