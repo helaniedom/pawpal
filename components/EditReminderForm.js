@@ -28,18 +28,45 @@ export default function EditReminderForm({ reminder, onUpdated, onCancel }) {
         event.preventDefault();
         setMessage("");
 
+        const trimmedPetName = formData.petName.trim();
+        const trimmedDescription = formData.description.trim();
+
+        if (!trimmedPetName) {
+            setMessage("Pet name is required.");
+            return;
+        }
+
+        if (!formData.type) {
+            setMessage("Reminder type is required.");
+            return;
+        }
+
+        if (!formData.date) {
+            setMessage("Date is required.");
+            return;
+        }
+
+        if (!formData.time) {
+            setMessage("Time is required.");
+            return;
+        }
+
         try {
             await updateDoc(doc(db, "reminders", reminder.id), {
-                petName: formData.petName,
+                petName: trimmedPetName,
                 type: formData.type,
                 date: formData.date,
                 time: formData.time,
-                description: formData.description,
+                description: trimmedDescription,
             });
 
             onUpdated({
                 ...reminder,
-                ...formData,
+                petName: trimmedPetName,
+                type: formData.type,
+                date: formData.date,
+                time: formData.time,
+                description: trimmedDescription,
             });
         } catch (error) {
             console.error("Error updating reminder:", error);
@@ -52,73 +79,53 @@ export default function EditReminderForm({ reminder, onUpdated, onCancel }) {
             <h2 className="page-title" style={{ fontSize: "24px" }}>Edit Reminder</h2>
 
             <form onSubmit={handleSubmit} className="form-layout">
-                <div>
-                    <label htmlFor="edit-petName">Pet Name</label>
-                    <input
-                        id="edit-petName"
-                        type="text"
-                        name="petName"
-                        value={formData.petName}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
+                <input
+                    type="text"
+                    name="petName"
+                    value={formData.petName}
+                    onChange={handleChange}
+                    required
+                />
 
-                <div>
-                    <label htmlFor="edit-type">Reminder Type</label>
-                    <select
-                        id="edit-type"
-                        name="type"
-                        value={formData.type}
-                        onChange={handleChange}
-                        required
-                    >
-                        <option value="">Select Reminder Type</option>
-                        <option value="Feeding">Feeding</option>
-                        <option value="Medication">Medication</option>
-                        <option value="Vet Appointment">Vet Appointment</option>
-                        <option value="Grooming Appointment">Grooming Appointment</option>
-                        <option value="Walk">Walk</option>
-                        <option value="Bath">Bath</option>
-                        <option value="Vaccination">Vaccination</option>
-                        <option value="Training Session">Training Session</option>
-                    </select>
-                </div>
+                <select
+                    name="type"
+                    value={formData.type}
+                    onChange={handleChange}
+                    required
+                >
+                    <option value="">Select Reminder Type</option>
+                    <option value="Feeding">Feeding</option>
+                    <option value="Medication">Medication</option>
+                    <option value="Vet Appointment">Vet Appointment</option>
+                    <option value="Grooming Appointment">Grooming Appointment</option>
+                    <option value="Walk">Walk</option>
+                    <option value="Bath">Bath</option>
+                    <option value="Vaccination">Vaccination</option>
+                    <option value="Training Session">Training Session</option>
+                </select>
 
-                <div>
-                    <label htmlFor="edit-date">Date</label>
-                    <input
-                        id="edit-date"
-                        type="date"
-                        name="date"
-                        value={formData.date}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
+                <input
+                    type="date"
+                    name="date"
+                    value={formData.date}
+                    onChange={handleChange}
+                    required
+                />
 
-                <div>
-                    <label htmlFor="edit-time">Time</label>
-                    <input
-                        id="edit-time"
-                        type="time"
-                        name="time"
-                        value={formData.time}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
+                <input
+                    type="time"
+                    name="time"
+                    value={formData.time}
+                    onChange={handleChange}
+                    required
+                />
 
-                <div>
-                    <label htmlFor="edit-description">Reminder Details</label>
-                    <textarea
-                        id="edit-description"
-                        name="description"
-                        rows="4"
-                        value={formData.description}
-                        onChange={handleChange}
-                    />
-                </div>
+                <textarea
+                    name="description"
+                    rows="4"
+                    value={formData.description}
+                    onChange={handleChange}
+                />
 
                 <div className="card-actions">
                     <button type="submit" className="primary-button">

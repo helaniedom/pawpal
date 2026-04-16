@@ -127,7 +127,6 @@ export default function AddReminderPage() {
                     <textarea
                         id="description"
                         name="description"
-                        placeholder="Reminder Details"
                         rows="4"
                         value={formData.description}
                         onChange={handleChange}

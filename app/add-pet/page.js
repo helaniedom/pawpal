@@ -31,13 +31,33 @@ export default function AddPetPage() {
         event.preventDefault();
         setMessage("");
 
+        const trimmedName = formData.name.trim();
+        const trimmedType = formData.type.trim();
+        const trimmedBreed = formData.breed.trim();
+        const trimmedNotes = formData.notes.trim();
+
+        if (!trimmedName) {
+            setMessage("Pet name is required.");
+            return;
+        }
+
+        if (!trimmedType) {
+            setMessage("Pet type is required.");
+            return;
+        }
+
+        if (formData.age !== "" && Number(formData.age) < 0) {
+            setMessage("Age cannot be negative.");
+            return;
+        }
+
         try {
             await addDoc(collection(db, "pets"), {
-                name: formData.name,
-                type: formData.type,
-                breed: formData.breed,
-                age: Number(formData.age) || 0,
-                notes: formData.notes,
+                name: trimmedName,
+                type: trimmedType,
+                breed: trimmedBreed,
+                age: formData.age === "" ? 0 : Number(formData.age),
+                notes: trimmedNotes,
                 imageUrl: formData.imageUrl,
                 createdAt: Timestamp.now(),
             });
@@ -96,6 +116,7 @@ export default function AddPetPage() {
                     type="number"
                     name="age"
                     placeholder="Age"
+                    min="0"
                     value={formData.age}
                     onChange={handleChange}
                 />
