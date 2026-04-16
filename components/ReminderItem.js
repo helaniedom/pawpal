@@ -45,6 +45,8 @@ export default function ReminderItem({ reminder, onDelete, onToggleComplete, onE
         statusText = "Overdue";
     }
 
+    const showDashboardCheckboxOnly = onToggleComplete && !onEdit && !onDelete;
+
     return (
         <div className="card interactive-card">
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
@@ -52,33 +54,114 @@ export default function ReminderItem({ reminder, onDelete, onToggleComplete, onE
                 <span className={statusClass}>{statusText}</span>
             </div>
 
-            <p><strong>Pet:</strong> {reminder.petName}</p>
-            <p>
-                <strong>Date:</strong>{" "}
-                {new Date(reminder.date).toLocaleDateString("en-US")}
-            </p>
-            <p><strong>Time:</strong> {reminder.time}</p>
-            <p><strong>Details:</strong> {reminder.description}</p>
+            {showDashboardCheckboxOnly ? (
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "flex-start",
+                        gap: "16px",
+                        marginTop: "10px"
+                    }}
+                >
+                    <div style={{ flex: 1 }}>
+                        <p><strong>Pet:</strong> {reminder.petName}</p>
+                        <p>
+                            <strong>Date:</strong>{" "}
+                            {new Date(reminder.date).toLocaleDateString("en-US")}
+                        </p>
+                        <p><strong>Time:</strong> {reminder.time}</p>
+                        <p><strong>Details:</strong> {reminder.description}</p>
+                    </div>
 
-            <div className="card-actions" style={{ justifyContent: "flex-start" }}>
-                {onToggleComplete && (
-                    <button onClick={handleToggleComplete} className="secondary-button">
-                        {reminder.completed ? "Mark Pending" : "Mark Complete"}
-                    </button>
-                )}
+                    <div
+                        style={{
+                            width: "70px",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            paddingTop: "48px"
+                        }}
+                    >
+                        <label
+                            style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                width: "44px",
+                                height: "44px",
+                                cursor: "pointer",
+                                position: "relative"
+                            }}
+                        >
+                            <input
+                                type="checkbox"
+                                checked={!!reminder.completed}
+                                onChange={handleToggleComplete}
+                                style={{
+                                    appearance: "none",
+                                    WebkitAppearance: "none",
+                                    width: "26px",
+                                    height: "26px",
+                                    border: "2px solid #f472b6",
+                                    borderRadius: "8px",
+                                    backgroundColor: reminder.completed ? "#ec4899" : "#fff7fb",
+                                    boxShadow: reminder.completed ? "0 0 0 3px rgba(244, 114, 182, 0.15)" : "none",
+                                    display: "grid",
+                                    placeItems: "center",
+                                    cursor: "pointer",
+                                    transition: "all 0.2s ease"
+                                }}
+                            />
+                            <span
+                                style={{
+                                    position: "absolute",
+                                    fontSize: "18px",
+                                    fontWeight: "700",
+                                    color: "white",
+                                    pointerEvents: "none",
+                                    opacity: reminder.completed ? 1 : 0,
+                                    transform: reminder.completed ? "scale(1)" : "scale(0.8)",
+                                    transition: "all 0.2s ease",
+                                    lineHeight: 1
+                                }}
+                            >
+                                ✓
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            ) : (
+                <>
+                    <p><strong>Pet:</strong> {reminder.petName}</p>
+                    <p>
+                        <strong>Date:</strong>{" "}
+                        {new Date(reminder.date).toLocaleDateString("en-US")}
+                    </p>
+                    <p><strong>Time:</strong> {reminder.time}</p>
+                    <p><strong>Details:</strong> {reminder.description}</p>
 
-                {onEdit && (
-                    <button onClick={() => onEdit(reminder)} className="edit-button">
-                        Edit
-                    </button>
-                )}
+                    <div className="card-actions" style={{ justifyContent: "flex-start" }}>
+                        {onToggleComplete && (
+                            <button onClick={handleToggleComplete} className="secondary-button">
+                                {reminder.completed ? "Mark Pending" : "Mark Complete"}
+                            </button>
+                        )}
 
-                {onDelete && (
-                    <button onClick={handleDelete} className="danger-button">
-                        Delete
-                    </button>
-                )}
-            </div>
+                        {onEdit && (
+                            <button onClick={() => onEdit(reminder)} className="edit-button">
+                                Edit
+                            </button>
+                        )}
+
+                        {onDelete && (
+                            <button onClick={handleDelete} className="danger-button">
+                                Delete
+                            </button>
+                        )}
+                    </div>
+                </>
+            )}
         </div>
     );
 }
