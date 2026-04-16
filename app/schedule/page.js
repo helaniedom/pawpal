@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { db } from "@/lib/firebase";
-import { collection, getDocs, query } from "firebase/firestore";
+import { collection, onSnapshot, query } from "firebase/firestore";
 import ReminderList from "@/components/ReminderList";
 import EditReminderForm from "@/components/EditReminderForm";
 
@@ -11,37 +11,6 @@ export default function SchedulePage() {
     const [loading, setLoading] = useState(true);
     const [selectedReminder, setSelectedReminder] = useState(null);
 
-    useEffect(() => {
-        async function fetchReminders() {
-            try {
-                const remindersQuery = query(
-                    collection(db, "reminders")
-                );
-
-                const querySnapshot = await getDocs(remindersQuery);
-
-                const reminderData = querySnapshot.docs
-                    .map((doc) => ({
-                        id: doc.id,
-                        ...doc.data(),
-                    }))
-                    .sort((a, b) => {
-                        const aDateTime = new Date(`${a.date}T${a.time}`);
-                        const bDateTime = new Date(`${b.date}T${b.time}`);
-                        return aDateTime - bDateTime;
-                    });
-
-                setReminders(reminderData);
-            } catch (error) {
-                console.error("Error fetching reminders:", error);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        fetchReminders();
-    }, []);
-
     function sortRemindersByDate(reminderList) {
         return [...reminderList].sort((a, b) => {
             const aDateTime = new Date(`${a.date}T${a.time}`);
@@ -49,6 +18,29 @@ export default function SchedulePage() {
             return aDateTime - bDateTime;
         });
     }
+
+    useEffect(() => {
+        const remindersQuery = query(collection(db, "reminders"));
+
+        const unsubscribe = onSnapshot(
+            remindersQuery,
+            (querySnapshot) => {
+                const reminderData = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+
+                setReminders(sortRemindersByDate(reminderData));
+                setLoading(false);
+            },
+            (error) => {
+                console.error("Error fetching reminders:", error);
+                setLoading(false);
+            }
+        );
+
+        return () => unsubscribe();
+    }, []);
 
     function handleDeleteReminder(deletedId) {
         setReminders((prev) =>
