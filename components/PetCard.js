@@ -20,7 +20,7 @@ export default function PetCard({ pet, onDelete, onEdit }) {
         <div className="card">
         <div style={{ display: "flex", justifyContent: "center", marginBottom: "12px" }}>
             <img
-            src={pet.imageUrl || "/chloe.png"}
+            src={pet.imageUrl || "/paw.png"}
             alt="pet"
             style={{
                 width: "90px",

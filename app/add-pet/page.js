@@ -14,7 +14,7 @@ export default function AddPetPage() {
         breed: "",
         age: "",
         notes: "",
-        imageUrl: "", 
+        imageUrl: "/paw.png",
     });
 
     const [message, setMessage] = useState("");
@@ -38,7 +38,7 @@ export default function AddPetPage() {
             breed: formData.breed,
             age: Number(formData.age) || 0,
             notes: formData.notes,
-            imageUrl: formData.imageUrl, 
+            imageUrl: formData.imageUrl,
             createdAt: Timestamp.now(),
         });
 
@@ -50,7 +50,7 @@ export default function AddPetPage() {
             breed: "",
             age: "",
             notes: "",
-            imageUrl: "", 
+            imageUrl: "/paw.png",
         });
 
         router.push("/pets");
@@ -108,13 +108,18 @@ export default function AddPetPage() {
             onChange={handleChange}
             />
 
-            <input
-            type="text"
+            <select
             name="imageUrl"
-            placeholder="Image URL (optional)"
             value={formData.imageUrl}
             onChange={handleChange}
-            />
+            >
+                <option value="/paw.png">Paw</option>
+                <option value="/dog.png">Dog</option>
+                <option value="/cat.png">Cat</option>
+                <option value="/bird.png">Bird</option>
+                <option value="/hamster.png">Hamster</option>
+                <option value="/rabbit.png">Rabbit</option>
+            </select>
 
             <button type="submit" className="primary-button">
             Save Pet

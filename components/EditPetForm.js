@@ -11,14 +11,13 @@ export default function EditPetForm({ pet, onUpdated, onCancel }) {
         breed: pet.breed || "",
         age: pet.age || "",
         notes: pet.notes || "",
-        imageUrl: pet.imageUrl || "",
+        imageUrl: pet.imageUrl || "/paw.png",
     });
 
     const [message, setMessage] = useState("");
 
     function handleChange(event) {
         const { name, value } = event.target;
-
         setFormData((prev) => ({
         ...prev,
         [name]: value,
@@ -92,13 +91,18 @@ export default function EditPetForm({ pet, onUpdated, onCancel }) {
             onChange={handleChange}
             />
 
-            <input
-            type="text"
+            <select
             name="imageUrl"
-            placeholder="Image URL (optional)"
             value={formData.imageUrl}
             onChange={handleChange}
-            />
+            >
+                <option value="/paw.png">Paw</option>
+                <option value="/dog.png">Dog</option>
+                <option value="/cat.png">Cat</option>
+                <option value="/bird.png">Bird</option>
+                <option value="/hamster.png">Hamster</option>
+                <option value="/rabbit.png">Rabbit</option>
+            </select>
 
             <div className="card-actions">
             <button type="submit" className="primary-button">
@@ -113,4 +117,4 @@ export default function EditPetForm({ pet, onUpdated, onCancel }) {
         {message && <p className="status-message">{message}</p>}
         </div>
     );
-}
+    }
